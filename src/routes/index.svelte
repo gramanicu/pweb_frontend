@@ -4,7 +4,6 @@
 </script>
 
 <script lang="ts">
-	import '$scss/app.scss';
 	import type { Auth0Client } from '@auth0/auth0-spa-js';
 	import auth from '$lib/authService';
 	import { auth0Client, isAuthenticated } from '$lib/store';

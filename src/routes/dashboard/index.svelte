@@ -2,17 +2,19 @@
 	import auth from '$lib/authService';
 	import { auth0Client, isAuthenticated, user } from '$lib/store';
 	import { scale } from 'svelte/transition';
-	import type { Auth0Client } from '@auth0/auth0-spa-js';
 	import { onMount } from 'svelte';
 	import { callApiAuth } from '$lib/api';
+	import { get } from 'svelte/store';
+	import { UserTypes } from '$lib/types';
 
 	let isLoading = true;
+	let userType: UserTypes = UserTypes.Undefined;
 
 	onMount(async () => {
-		isLoading = false;
-
+		userType = await auth.getUserRole(get(auth0Client));
 		const res = await callApiAuth('/api/private', 'GET');
 		console.log(res);
+		isLoading = false;
 	});
 </script>
 
@@ -35,5 +37,14 @@
 			/>
 		</svg>
 	{/if}
-	<div class="text-primary">HELLO</div>
+
+	<div class="text-primary">
+		{#if userType === UserTypes.Owner}
+			You are a owner
+		{:else if userType === UserTypes.Provider}
+			You are a provider
+		{:else if userType === UserTypes.Refugee}
+			You are a refugee
+		{/if}
+	</div>
 </main>

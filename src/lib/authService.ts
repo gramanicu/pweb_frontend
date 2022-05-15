@@ -4,9 +4,9 @@ import createAuth0Client, {
 	type PopupLoginOptions,
 	type RedirectLoginOptions
 } from '@auth0/auth0-spa-js';
-import { user, isAuthenticated, popupOpen } from '$lib/store';
+import { user, isAuthenticated, popupOpen, auth0Client } from '$lib/store';
 import { vars } from '$lib/variables';
-import { auth0Client } from './store';
+import { UserTypes } from './types';
 
 async function createClient() {
 	const client = await createAuth0Client({
@@ -58,11 +58,32 @@ function logout(client: Auth0Client, options: LogoutOptions) {
 	return client.logout(options);
 }
 
+async function getUserRole(client: Auth0Client | null): Promise<UserTypes> {
+	if (client != null) {
+		const data = await client.getIdTokenClaims();
+		if (data) {
+			const rolesArr: string[] = data[`${vars.auth0.audience}/roles`];
+
+			switch (rolesArr[0]) {
+				case 'owner':
+					return UserTypes.Owner;
+				case 'provider':
+					return UserTypes.Provider;
+				case 'refugee':
+					return UserTypes.Refugee;
+			}
+		}
+	}
+
+	return UserTypes.Undefined;
+}
+
 const auth = {
 	createClient,
 	loginWithPopup,
 	loginWithRedirect,
-	logout
+	logout,
+	getUserRole
 };
 
 export default auth;

@@ -4,6 +4,7 @@
 	import { vars } from '$lib/variables';
 
 	let select: 'owner' | 'provider' | 'refugee' | null = null;
+	const email = $page.url.searchParams.get('email');
 
 	function submit() {
 		if (select !== null) {
@@ -14,6 +15,7 @@
 </script>
 
 <main class="w-screen flex flex-col items-center justify-end sm:justify-center h-screen">
+	<h1>Welcome {email}</h1>
 	<div
 		class="w-full sm:max-w-md px-4 py-8 sm:p-4 rounded-none sm:rounded-lg border-t border-slate-400 sm:border-0 sm:ring-2 ring-primary shadow-md flex flex-col bg-slate-200"
 	>

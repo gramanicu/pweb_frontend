@@ -47,4 +47,28 @@
 			You are a refugee
 		{/if}
 	</div>
+
+	<select
+		class="rounded-lg shadow-md w-full sm:w-fit sm:max-w-xs mt-1 mb-2 text-lg sm:text-base border-gray-400"
+		name="roles"
+		id="roles"
+	>
+		<option value={null} disabled selected hidden>Select your role...</option>
+		<option value="refugee">Refugee</option>
+		<option value="owner">Location owner</option>
+		<option value="provider">Service provider</option>
+	</select>
+
+	<input
+		class="rounded-lg shadow-md w-full sm:w-fit sm:max-w-xs mt-1 mb-2 text-lg sm:text-base border-gray-400"
+		type="text"
+	/>
+	<input
+		class="rounded-lg shadow-md w-full sm:w-fit sm:max-w-xs mt-1 mb-2 text-lg sm:text-base border-gray-400"
+		type="email"
+	/>
+	<input
+		class="rounded-lg shadow-md w-full sm:w-fit sm:max-w-xs mt-1 mb-2 text-lg sm:text-base border-gray-400"
+		type="number"
+	/>
 </main>

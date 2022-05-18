@@ -1,23 +1,9 @@
 <script lang="ts">
-	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import type { Owner } from '$lib/types';
 	import { Mail, Phone } from '@steeze-ui/heroicons';
-	import { onMount } from 'svelte';
 
-	export let ownerId: number;
-
-	let owner: Owner;
-
-	onMount(async () => {
-		owner = {
-			id: ownerId,
-			auth0_id: 'auth0_id',
-			email: 'email@example.com',
-			phone: '0123456789',
-			name: 'John Doe'
-		};
-	});
+	export let owner: Owner;
 </script>
 
 {#if owner}

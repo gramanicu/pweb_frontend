@@ -9,6 +9,8 @@
 	import Logo from '$components/logo.svelte';
 	import { page } from '$app/stores';
 
+	let menuOpened: boolean = false;
+
 	onMount(async () => {
 		if (!$isAuthenticated) {
 			window.location.href = '/';
@@ -22,17 +24,22 @@
 		}
 	}
 
-	let menuOpened = false;
-
-	function highlighedLink(url: string, currentUrl: string) {
-		menuOpened = false;
-		return currentUrl === url;
-	}
-
-	let links: { url: string; name: string }[] = [
+	const links = [
 		{
-			url: '/dashboard',
-			name: 'Dasboard'
+			text: 'Dashboard',
+			url: '/dashboard'
+		},
+		{
+			text: 'Requests',
+			url: '/dashboard/requests'
+		},
+		{
+			text: 'Locations',
+			url: '/dashboard/locations'
+		},
+		{
+			text: 'Create Location',
+			url: '/dashboard/locations/new'
 		}
 	];
 </script>
@@ -42,96 +49,57 @@
 </svelte:head>
 
 {#if $isAuthenticated}
-	<nav class="bg-black border-b-2 border-primary sticky top-0 md:relative">
-		<div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-2 sm:pb-0 sm:pt-1">
-			<div class="relative flex items-center justify-between">
-				<div class="flex items-center sm:hidden">
-					<!-- Mobile menu button-->
-					<button
-						on:click={() => {
-							menuOpened = !menuOpened;
-						}}
-						type="button"
-						class="inline-flex items-center justify-center rounded-md transition-colors duration-300 text-gray-400 hover:text-white focus:outline-none "
-						aria-controls="mobile-menu"
-						aria-expanded="false"
-					>
-						<span class="sr-only">Open main menu</span>
-						<Icon
-							src={!menuOpened ? Menu : X}
-							theme="solid"
-							class="h-6 w-6 transition-colors duration-300 text-gray-400 hover:text-white"
-						/>
-					</button>
-				</div>
-				<div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-					<div class="flex-shrink-0 flex items-center">
-						<Logo class="text-2xl self-start sm:text-xl" primary={'primary'} />
-					</div>
-					<div class="hidden sm:block sm:ml-6">
-						<div class="flex space-x-4">
-							{#each links as link}
-								<a
-									href={link.url}
-									class="{highlighedLink(link.url, $page.url.pathname)
-										? 'bg-primary border-b border-primary'
-										: 'bg-transparent border-transparent hover:border-secondary hover:bg-secondary border-b'} rounded-t-lg h-full  text-white  px-4 py-2 text-sm font-medium"
-									aria-current="page">{link.name}</a
-								>
-							{/each}
-						</div>
-					</div>
-				</div>
-				<div class="flex items-center pr-2 sm:ml-6 sm:pr-0">
-					<button
-						type="button"
-						class="hidden md:inline-block p-1 rounded-full text-gray-400 hover:text-white focus:outline-none"
-					>
-						<span class="sr-only">View notifications</span>
-						<Icon
-							src={Bell}
-							theme="solid"
-							class="h-6 w-6  transition-colors duration-300 text-gray-400 hover:text-white"
-						/>
-					</button>
-					<div class="inline-flex items-center justify-center ml-1 md:ml-3">
-						<button
-							on:click={() => logout()}
-							class="sm:py-2 sm:px-4 text-sm bg-transparent transition-colors duration-500 border-primary text-gray-400 hover:text-white md:rounded-t-lg md:hover:bg-secondary"
-						>
-							<Icon
-								src={Logout}
-								theme="solid"
-								class="sm:hidden h-6 w-6 transition-colors duration-300 text-gray-400 hover:text-white"
-							/>
-							<span class="hidden sm:inline-block sm:text-white">Sign out</span></button
-						>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div
-			class="{menuOpened
-				? 'block'
-				: 'hidden'} bg-black z-90 absolute w-full border-b-2 border-primary"
-			id="mobile-menu"
+	<div class="relative flex flex-col">
+		<header class="w-full flex flex-row justify-between items-center bg-primary p-4 text-white">
+			<button
+				on:click={() => {
+					menuOpened = !menuOpened;
+				}}
+				type="button"
+			>
+				<span class="sr-only">Open main menu</span>
+				<Icon
+					src={menuOpened ? X : Menu}
+					theme="solid"
+					class="w-6 h-6 transition-colors duration-200 text-gray-300 hover:text-white"
+				/></button
+			>
+			<Logo class="text-2xl font-medium tracking-widest leading-none" />
+			<button
+				on:click={() => {
+					logout();
+				}}
+				type="button"
+			>
+				<Icon
+					src={Logout}
+					theme="outline"
+					class="w-6 h-6 transition-colors duration-200 text-gray-300 hover:text-white"
+				/>
+			</button>
+		</header>
+		<nav
+			class="w-full z-10  {menuOpened
+				? 'flex'
+				: 'hidden'} max-w-sm sm:rounded-b-md flex-col absolute top-14 bg-white border-b border-black"
 		>
-			<div class="px-2 pt-2 pb-3 space-y-1">
-				{#each links as link}
-					<a
-						href={link.url}
-						class="{highlighedLink(link.url, $page.url.pathname)
-							? 'bg-primary cursor-default pointer-events-none'
-							: 'bg-transparent hover:bg-secondary'} text-white block px-3 py-2 rounded-md text-base font-medium"
-						aria-current="page">{link.name}</a
-					>
-				{/each}
-			</div>
-		</div>
-	</nav>
+			{#each links as link, index}
+				<a
+					on:click={() => {
+						menuOpened = false;
+					}}
+					href={link.url}
+					class="w-full text-2xl border font-medium leading-none p-4 flex flex-row justify-center items-center {link.url ===
+					$page.url.pathname
+						? 'bg-secondary border-secondary  select-none cursor-pointer pointer-events-none  text-white'
+						: 'bg-white text-black border-black hover:underline'} {index == links.length - 1
+						? 'sm:rounded-b-md'
+						: ''}"
+				>
+					{link.text}
+				</a>
+			{/each}
+		</nav>
+	</div>
 	<slot />
-
-	<footer class="mt-auto w-full bg-black text-white font-light text-md p-4 text-center">
-		&copy; Copyright 2022
-	</footer>
 {/if}

@@ -21,6 +21,7 @@ export interface Owner {
 	email: string;
 	name: string;
 	phone: string;
+	locations?: Location[];
 }
 
 export interface Provider {
@@ -29,6 +30,7 @@ export interface Provider {
 	email: string;
 	name: string;
 	phone: string;
+	services?: Service[];
 }
 
 export interface Refugee {

@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Badge from '$components/simple/Badge.svelte';
-
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import { serviceTypeToString, type Service } from '$lib/types';
 	import { ArrowRight, OfficeBuilding } from '@steeze-ui/heroicons';

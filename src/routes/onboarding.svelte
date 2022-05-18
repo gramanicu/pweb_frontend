@@ -275,12 +275,12 @@
 					</div>
 				</div>
 			</form>
-			<div class="w-full flex flex-row">
+			<div class="w-full grid grid-cols-2 gap-4">
 				<LargeOutlineButton
 					on:click={() => {
 						step = 0;
 					}}
-					class="mr-4 text-lg"
+					class="text-lg"
 					text="Back"
 				/>
 

@@ -4,7 +4,7 @@ import createAuth0Client, {
 	type PopupLoginOptions,
 	type RedirectLoginOptions
 } from '@auth0/auth0-spa-js';
-import { user, isAuthenticated, popupOpen, auth0Client } from '$lib/store';
+import { user, isAuthenticated, popupOpen, auth0Client, userType } from '$lib/store';
 import { vars } from '$lib/variables';
 import { UserTypes } from './types';
 
@@ -26,6 +26,7 @@ async function loginWithRedirect(client: Auth0Client, options: RedirectLoginOpti
 
 		if (newUser) {
 			user.set(newUser);
+			userType.set(await auth.getUserRole(client));
 			isAuthenticated.set(true);
 		}
 	} catch (e) {
@@ -44,6 +45,7 @@ async function loginWithPopup(client: Auth0Client, options: PopupLoginOptions) {
 
 		if (newUser) {
 			user.set(newUser);
+			userType.set(await auth.getUserRole(client));
 			isAuthenticated.set(true);
 		}
 	} catch (e) {

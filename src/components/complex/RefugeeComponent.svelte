@@ -1,28 +1,10 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import type { Owner, Refugee } from '$lib/types';
+	import type { Refugee } from '$lib/types';
 	import { Mail, Phone } from '@steeze-ui/heroicons';
-	import { onMount } from 'svelte';
 
-	export let refugeeId: number;
-
-	let refugee: Refugee;
-
-	onMount(async () => {
-		refugee = {
-			id: refugeeId,
-			auth0_id: 'auth0_id',
-			email: 'email@example.com',
-			phone: '0123456789',
-			name: 'John Doe',
-			id_country: 0,
-			id_language: 0,
-			no_adults: 2,
-			no_children: 4,
-			notes: ''
-		};
-	});
+	export let refugee: Refugee;
 </script>
 
 {#if refugee}

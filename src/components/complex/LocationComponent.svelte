@@ -1,47 +1,10 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import { ServiceTypes, serviceTypeToString, type Location, type Service } from '$lib/types';
+	import { serviceTypeToString, type Location } from '$lib/types';
 	import { LocationMarker, User } from '@steeze-ui/heroicons';
-	import { onMount } from 'svelte';
 
-	export let locationId: number;
-
-	let location: Location;
-
-	onMount(async () => {
-		let services: Service[] = [
-			{
-				id: 1,
-				description: 'desc',
-				id_provider: 1,
-				id_loc: 1,
-				type: ServiceTypes.CLOTHES
-			},
-			{
-				id: 2,
-				description: 'desc',
-				id_provider: 2,
-				id_loc: 2,
-				type: ServiceTypes.FOOD
-			}
-		];
-
-		location = {
-			id: locationId,
-			name: 'Location name',
-			address: 'Full address',
-			id_owner: 0,
-			services: services,
-			owner: {
-				id: 0,
-				auth0_id: 'auth0_id',
-				email: 'email@example.com',
-				phone: '0123456789',
-				name: 'John Doe'
-			}
-		};
-	});
+	export let location: Location;
 </script>
 
 {#if location && location.owner}

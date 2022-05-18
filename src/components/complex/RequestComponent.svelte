@@ -3,7 +3,7 @@
 
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import type { AccommodationRequest } from '$lib/types';
-	import { X, Check, OfficeBuilding, CheckCircle, XCircle } from '@steeze-ui/heroicons';
+	import { X, OfficeBuilding, CheckCircle, XCircle } from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 
 	export let accRequest: AccommodationRequest;

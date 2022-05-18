@@ -1,30 +1,10 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import { ServiceTypes, serviceTypeToString, type Owner, type Service } from '$lib/types';
-	import { User, Phone } from '@steeze-ui/heroicons';
-	import { onMount } from 'svelte';
+	import { serviceTypeToString, type Service } from '$lib/types';
+	import { User } from '@steeze-ui/heroicons';
 
-	export let serviceId: number;
-
-	let service: Service;
-
-	onMount(async () => {
-		service = {
-			id: serviceId,
-			type: ServiceTypes.MEDICAL_SERVICE,
-			description: 'Description',
-			id_provider: 0,
-			provider: {
-				id: 0,
-				auth0_id: 'auth0_id',
-				email: 'email@example.com',
-				phone: '0123456789',
-				name: 'John Doe'
-			},
-			id_loc: 0
-		};
-	});
+	export let service: Service;
 </script>
 
 {#if service && service.provider}

@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import type { Location } from '$lib/types';
-	import { ArrowRight, Hashtag, LocationMarker, User } from '@steeze-ui/heroicons';
+	import { ArrowRight, LocationMarker } from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 
 	export let location: Location;

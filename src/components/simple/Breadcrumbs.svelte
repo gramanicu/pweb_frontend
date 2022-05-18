@@ -17,9 +17,9 @@
 			<Icon size="18px" src={ChevronRight} theme="solid" class="text-tertiary" />
 		{/if}
 		{#if link.url !== ''}
-			<a href={link.url} class="hover:underline">{link.text}</a>
+			<a href={link.url} class="hover:underline text-tertiary">{link.text}</a>
 		{:else}
-			<span class=" cursor-default select-none text-tertiary">{link.text}</span>
+			<span class=" cursor-default select-none ">{link.text}</span>
 		{/if}
 	{/each}
 </div>

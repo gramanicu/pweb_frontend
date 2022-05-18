@@ -49,6 +49,7 @@
 	"dependencies": {
 		"@auth0/auth0-spa-js": "^1.21.0",
 		"axios": "^0.27.2",
-		"luxon": "^2.4.0"
+		"luxon": "^2.4.0",
+		"svelte-use-click-outside": "^1.0.0"
 	}
 }

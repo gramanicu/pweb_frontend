@@ -1,55 +1,299 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import Logo from '$components/logo.svelte';
+	import Button from '$components/simple/Button.svelte';
+	import CheckLabel from '$components/simple/CheckLabel.svelte';
+	import Dropdown from '$components/simple/Dropdown.svelte';
+	import ImageLabel from '$components/simple/ImageLabel.svelte';
+	import LargeButton from '$components/simple/LargeButton.svelte';
+	import LargeOutlineButton from '$components/simple/LargeOutlineButton.svelte';
+	import OutlineButton from '$components/simple/OutlineButton.svelte';
+	import { callApi, callApiAuth } from '$lib/api';
+	import { countries, languages } from '$lib/constants';
+	import type { Country, Language } from '$lib/types';
 	import { vars } from '$lib/variables';
+	import { Hashtag } from '@steeze-ui/heroicons';
+	import { onMount } from 'svelte';
 
-	let select: 'owner' | 'provider' | 'refugee' | null = null;
-	const email = $page.url.searchParams.get('email');
+	const emailAuth0 = $page.url.searchParams.get('email');
+	let countriesOptions: Option[] = [];
+	let languagesOptions: Option[] = [];
+	let step = 0;
 
-	function submit() {
-		if (select !== null) {
+	interface Option {
+		text: string;
+		value: any;
+	}
+
+	onMount(() => {
+		// TODO - Call backend for data
+		for (const country of countries) {
+			const c: Country = {
+				id: 0,
+				name: country
+			};
+
+			countriesOptions.push({
+				text: country,
+				value: c
+			});
+		}
+
+		for (const language of languages) {
+			const l: Language = {
+				id: 0,
+				name: language
+			};
+
+			languagesOptions.push({
+				text: language,
+				value: l
+			});
+		}
+
+		countriesOptions = countriesOptions;
+		languagesOptions = languagesOptions;
+	});
+
+	let selectedRole = {
+		text: 'Choose role',
+		value: ''
+	};
+	let selectedCountry: Option = {
+		text: 'Select country',
+		value: ''
+	};
+	let selectedLanguage: Option = {
+		text: 'Select language',
+		value: ''
+	};
+
+	let email = emailAuth0;
+	let phone = '';
+	let name = '';
+	let isGroup = false;
+	let no_adults = 1;
+	let no_children = 0;
+	let notes = '';
+
+	$: validContact = email != '' && phone != '' && name != '';
+	$: validRefugee = validContact && no_adults >= 1 && no_children >= 0;
+
+	async function submit() {
+		if (selectedRole.value != '') {
+			console.log(
+				`${selectedRole.value} ${isGroup} ${no_adults} ${no_children} ${notes} ${phone} ${email} ${name}`
+			);
+
 			const state = $page.url.searchParams.get('state');
-			goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${select}`);
+			goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
+
+			// const res = await callApi(
+			// 	'/',
+			// 	'POST',
+			// 	JSON.stringify({
+			// 		email
+			// 	})
+			// );
+
+			// if (res) {
+			// 	const state = $page.url.searchParams.get('state');
+			// 	goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
+			// }
 		}
 	}
 </script>
 
-<main class="w-screen flex flex-col items-center justify-end sm:justify-center h-screen">
-	<h1>Welcome {email}</h1>
-	<div
-		class="w-full sm:max-w-md px-4 py-8 sm:p-4 rounded-none sm:rounded-lg border-t border-slate-400 sm:border-0 sm:ring-2 ring-primary shadow-md flex flex-col bg-slate-200"
-	>
-		<label for="roles" class="text-xl sm:text-lg font-light">What kind of user are you?</label>
+<header class="w-full flex flex-row justify-center items-center bg-primary p-4 text-white">
+	<Logo class="text-2xl font-medium tracking-widest leading-none" />
+</header>
+<main class="w-screen flex flex-col p-4 max-w-sm mx-auto">
+	<h1 class="text-primary text-2xl font-bold">First, choose your role</h1>
+	<Dropdown
+		class="w-full text-2xl"
+		bind:selectedOption={selectedRole}
+		options={[
+			{ value: 'owner', text: 'Owner' },
+			{ value: 'provider', text: 'Provider' },
+			{ value: 'refugee', text: 'Refugee' }
+		]}
+	/>
 
-		<select
-			class="rounded-lg shadow-md w-full sm:w-fit sm:max-w-xs mt-1 mb-2 text-lg sm:text-base border-gray-400"
-			bind:value={select}
-			name="roles"
-			id="roles"
-		>
-			<option value={null} disabled selected hidden>Select your role...</option>
-			<option value="refugee">Refugee</option>
-			<option value="owner">Location owner</option>
-			<option value="provider">Service provider</option>
-		</select>
+	{#if selectedRole.value == 'owner' || selectedRole.value == 'provider'}
+		<form class="mt-4 mb-4">
+			<h2 class="font-bold text-lg">Contact information</h2>
+			<div class="flex flex-col border border-black rounded-lg p-4 shadow-md">
+				<div class="flex flex-col w-full mb-2">
+					<label class="font-bold text-lg" for="name">Full name</label>
+					<input
+						bind:value={name}
+						class="px-3 py-2 text-lg leading-none rounded-md"
+						type="text"
+						name="name"
+						id="name"
+						placeholder="John Doe"
+					/>
+				</div>
+				<div class="flex flex-col w-full mb-2">
+					<label class="font-bold text-lg" for="email">Email</label>
+					<input
+						bind:value={email}
+						class="px-3 py-2 text-lg leading-none rounded-md"
+						type="email"
+						name="email"
+						id="email"
+						placeholder={emailAuth0}
+					/>
+				</div>
+				<div class="flex flex-col w-full">
+					<label class="font-bold text-lg" for="phone">Phone</label>
+					<input
+						bind:value={phone}
+						class="px-3 py-2 text-lg leading-none rounded-md"
+						type="tel"
+						name="phone"
+						id="phone"
+						placeholder="0123456789"
+					/>
+				</div>
+			</div>
+		</form>
+		{#if validContact}
+			<LargeButton
+				class="text-lg"
+				text="Submit"
+				on:click={() => {
+					submit();
+				}}
+			/>
+		{/if}
+	{:else if selectedRole.value == 'refugee'}
+		{#if step == 0}
+			<div class="my-4 flex flex-col border border-black rounded-lg p-4 shadow-md">
+				<div class="flex flex-row items-center text-lg mb-4">
+					<span class="font-bold mr-2">Country</span>
+					<Dropdown bind:selectedOption={selectedCountry} options={countriesOptions} />
+				</div>
+				<div class="flex flex-row items-center text-lg mb-4">
+					<span class="font-bold mr-2">Language</span>
+					<Dropdown bind:selectedOption={selectedLanguage} options={languagesOptions} />
+				</div>
+				<CheckLabel bind:checked={isGroup} text="Are you a group?" />
+				{#if isGroup}
+					<div class="grid grid-cols-2 mt-4">
+						<div class="flex flex-row">
+							<ImageLabel class="text-lg" img={Hashtag} text="Adults:" />
+							<input
+								bind:value={no_adults}
+								min="1"
+								max="99"
+								class="ml-2 leading-none text-lg py-1 px-1.5 w-14 rounded-md"
+								type="number"
+								name="no_adults"
+								id="no_adults"
+								placeholder="1"
+							/>
+						</div>
+						<div class="flex flex-row">
+							<ImageLabel class="text-lg" img={Hashtag} text="Children:" />
+							<input
+								bind:value={no_children}
+								min="0"
+								max="99"
+								class="ml-2 leading-none text-lg py-1 px-1.5 w-14 rounded-md"
+								type="number"
+								name="no_children"
+								id="no_children"
+								placeholder="0"
+							/>
+						</div>
+					</div>
+					<div class="flex flex-col items-start w-full mt-2">
+						<h3 class="text-gray-600 leading-none">Notes (special needs, etc.)</h3>
 
-		<small class="mb-6 sm:mb-2 text-base sm:text-sm font-medium text-gray-500">
-			{#if select === 'owner'}
-				A location owner is someone who has the posibility to provide accomodation for refugees.
-			{:else if select === 'provider'}
-				A service provider is someone who can provider different types of services (medical, food,
-				etc.) for refugees.
-			{:else if select === 'refugee'}
-				A person or group who requires accomodation (and after they are hosted, services can be
-				provided)
+						<textarea
+							bind:value={notes}
+							class="resize-none w-full bg-gray-300 rounded-md border-none"
+							name="notes"
+							id="notes"
+							rows="4"
+						/>
+					</div>
+				{/if}
+			</div>
+			{#if selectedCountry.value != '' && selectedLanguage.value != ''}
+				<LargeButton
+					class="text-lg"
+					text="Next"
+					on:click={() => {
+						step = 1;
+					}}
+				/>
 			{/if}
-		</small>
+		{:else if step == 1}
+			<form class="mt-4 mb-4">
+				<h2 class="font-bold text-lg leading-none">Contact information</h2>
+				{#if isGroup}
+					<small class="text-xs font-bold text-gray-600 leading-none"
+						>*as a group, enter the information of a representant</small
+					>
+				{/if}
+				<div class="flex flex-col border border-black rounded-lg p-4 shadow-md">
+					<div class="flex flex-col w-full mb-2">
+						<label class="font-bold text-lg" for="name">Full name</label>
+						<input
+							bind:value={name}
+							class="px-3 py-2 text-lg leading-none rounded-md"
+							type="text"
+							name="name"
+							id="name"
+							placeholder="John Doe"
+						/>
+					</div>
+					<div class="flex flex-col w-full mb-2">
+						<label class="font-bold text-lg" for="email">Email</label>
+						<input
+							bind:value={email}
+							class="px-3 py-2 text-lg leading-none rounded-md"
+							type="email"
+							name="email"
+							id="email"
+							placeholder={emailAuth0}
+						/>
+					</div>
+					<div class="flex flex-col w-full">
+						<label class="font-bold text-lg" for="phone">Phone</label>
+						<input
+							bind:value={phone}
+							class="px-3 py-2 text-lg leading-none rounded-md"
+							type="tel"
+							name="phone"
+							id="phone"
+							placeholder="0123456789"
+						/>
+					</div>
+				</div>
+			</form>
+			<div class="w-full flex flex-row">
+				<LargeOutlineButton
+					on:click={() => {
+						step = 0;
+					}}
+					class="mr-4 text-lg"
+					text="Back"
+				/>
 
-		<button
-			on:click={() => submit()}
-			class="w-full sm:w-fit sm:self-end px-4 py-2 text-lg sm:text-base font-medium {select === null
-				? 'bg-gray-700 pointer-events-none'
-				: 'bg-primary'} text-white rounded-lg">Send</button
-		>
-	</div>
+				{#if validRefugee}
+					<LargeButton
+						on:click={() => {
+							submit();
+						}}
+						class="text-lg"
+						text="Submit"
+					/>
+				{/if}
+			</div>
+		{/if}
+	{/if}
 </main>

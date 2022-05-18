@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ChevronDown } from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
+	import { clickOutside } from 'svelte-use-click-outside';
 
 	interface Option {
 		text: string;
@@ -9,11 +10,15 @@
 
 	let opened = false;
 
+	function clickOutsideHandler() {
+		opened = false;
+	}
+
 	export let options: Option[];
 	export let selectedOption = { text: '', value: '' };
 </script>
 
-<div class="relative inline-block text-left w-fit">
+<div use:clickOutside={clickOutsideHandler} class="{$$props.class} relative inline-block text-left">
 	<div>
 		<button
 			on:click={() => {
@@ -32,20 +37,25 @@
 	<div
 		class="{opened
 			? 'block'
-			: 'hidden'} origin-top-right absolute right-0 mt-1 rounded-md shadow-lg border border-black bg-white w-full"
+			: 'hidden'} z-10 origin-top-right absolute right-0 mt-1 rounded-md shadow-lg border border-gray-500 bg-white w-full"
 		role="menu"
 		aria-orientation="vertical"
 		aria-labelledby="menu-button"
 		tabindex="-1"
 	>
-		<div class="py-1 flex flex-col" role="none">
+		<div
+			class="flex flex-col max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
+			role="none"
+		>
 			{#each options as option, index}
 				<button
 					on:click={() => {
 						selectedOption = option;
 						opened = false;
 					}}
-					class="block px-4 py-2 text-sm {selectedOption == option
+					class="block w-full px-4 py-2 text-left  {index != options.length - 1
+						? 'border-b border-gray-500'
+						: ''} {selectedOption == option
 						? 'text-secondary pointer-events-none'
 						: ' hover:font-medium'}"
 					role="menuitem"

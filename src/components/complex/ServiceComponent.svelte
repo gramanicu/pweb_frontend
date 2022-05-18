@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import type { Owner, Service } from '$lib/types';
+	import { ServiceTypes, serviceTypeToString, type Owner, type Service } from '$lib/types';
 	import { User, Phone } from '@steeze-ui/heroicons';
 	import { onMount } from 'svelte';
 
@@ -12,7 +12,7 @@
 	onMount(async () => {
 		service = {
 			id: serviceId,
-			type: 'Medical',
+			type: ServiceTypes.MEDICAL_SERVICE,
 			description: 'Description',
 			id_provider: 0,
 			provider: {
@@ -31,7 +31,7 @@
 	<div class="w-full max-w-sm p-4 border border-black rounded-md">
 		<div class="flex flex-row w-full items-center">
 			<h1 class="font-bold text-2xl mr-2">Service type:</h1>
-			<Badge text={service.type} class="text-2xl" />
+			<Badge text={serviceTypeToString(service.type)} class="text-2xl" />
 		</div>
 		<div class="py-2">
 			<a href="/dashboard/providers/{service.provider.id}">

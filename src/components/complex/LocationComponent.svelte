@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import type { Location, Service } from '$lib/types';
+	import { ServiceTypes, serviceTypeToString, type Location, type Service } from '$lib/types';
 	import { LocationMarker, User } from '@steeze-ui/heroicons';
 	import { onMount } from 'svelte';
 
@@ -16,14 +16,14 @@
 				description: 'desc',
 				id_provider: 1,
 				id_loc: 1,
-				type: 'Food'
+				type: ServiceTypes.CLOTHES
 			},
 			{
 				id: 2,
 				description: 'desc',
 				id_provider: 2,
 				id_loc: 2,
-				type: `Medical${locationId}`
+				type: ServiceTypes.FOOD
 			}
 		];
 
@@ -62,7 +62,7 @@
 		<div class="w-full flex flex-row">
 			{#if location.services}
 				{#each location.services as service}
-					<Badge class="mr-2" text={service.type} />
+					<Badge class="mr-2" text={serviceTypeToString(service.type)} />
 				{/each}
 			{/if}
 		</div>

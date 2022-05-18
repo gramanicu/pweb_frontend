@@ -65,7 +65,7 @@ export interface Service {
 	location?: Location;
 	id_provider: number;
 	id_loc: number;
-	type: string;
+	type: ServiceTypes;
 }
 
 export interface AccommodationRequest {
@@ -75,4 +75,36 @@ export interface AccommodationRequest {
 	id_refugee: number;
 	id_location: number;
 	location?: Location;
+}
+
+export enum ServiceTypes {
+	GENERIC,
+	FOOD,
+	CLOTHES,
+	MEDICAL_SERVICE,
+	TRANSLATION_SERVICE,
+	LEISURE
+}
+
+export function serviceTypeToString(type: ServiceTypes): string {
+	switch (type) {
+		case ServiceTypes.GENERIC: {
+			return 'Generic';
+		}
+		case ServiceTypes.FOOD: {
+			return 'Food';
+		}
+		case ServiceTypes.CLOTHES: {
+			return 'Clothing';
+		}
+		case ServiceTypes.MEDICAL_SERVICE: {
+			return 'Medical';
+		}
+		case ServiceTypes.TRANSLATION_SERVICE: {
+			return 'Translation';
+		}
+		case ServiceTypes.LEISURE: {
+			return 'Leisure';
+		}
+	}
 }

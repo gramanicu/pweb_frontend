@@ -10,13 +10,13 @@
 	import LargeOutlineButton from '$components/simple/LargeOutlineButton.svelte';
 	import OutlineButton from '$components/simple/OutlineButton.svelte';
 	import { callApi, callApiAuth } from '$lib/api';
-	import { countries, languages } from '$lib/constants';
 	import type { Country, Language } from '$lib/types';
 	import { vars } from '$lib/variables';
 	import { Hashtag } from '@steeze-ui/heroicons';
 	import { onMount } from 'svelte';
 
 	const emailAuth0 = $page.url.searchParams.get('email');
+	const idAuth0 = $page.url.searchParams.get('auth0_id');
 	let countriesOptions: Option[] = [];
 	let languagesOptions: Option[] = [];
 	let step = 0;
@@ -26,30 +26,27 @@
 		value: any;
 	}
 
-	onMount(() => {
-		// TODO - Call backend for data
-		for (const country of countries) {
-			const c: Country = {
-				id: 0,
-				name: country
-			};
+	onMount(async () => {
+		const rawCountries = await callApi('/generic/countries', 'GET');
+		const rawLanguages = await callApi('/generic/languages', 'GET');
 
-			countriesOptions.push({
-				text: country,
-				value: c
-			});
-		}
+		if (rawCountries && rawLanguages) {
+			const countries: Country[] = JSON.parse(rawCountries);
+			const languages: Language[] = JSON.parse(rawLanguages);
 
-		for (const language of languages) {
-			const l: Language = {
-				id: 0,
-				name: language
-			};
+			for (const country of countries) {
+				countriesOptions.push({
+					text: country.name,
+					value: country.id
+				});
+			}
 
-			languagesOptions.push({
-				text: language,
-				value: l
-			});
+			for (const language of languages) {
+				languagesOptions.push({
+					text: language.name,
+					value: language.id
+				});
+			}
 		}
 
 		countriesOptions = countriesOptions;
@@ -86,21 +83,27 @@
 				`${selectedRole.value} ${isGroup} ${no_adults} ${no_children} ${notes} ${phone} ${email} ${name}`
 			);
 
-			const state = $page.url.searchParams.get('state');
-			goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
+			const res = await callApi(
+				'/users/new',
+				'POST',
+				JSON.stringify({
+					email,
+					phone,
+					role: selectedRole.value,
+					name,
+					id_country: selectedCountry.value,
+					id_language: selectedLanguage.value,
+					notes,
+					no_adults,
+					no_children,
+					auth0_id: idAuth0
+				})
+			);
 
-			// const res = await callApi(
-			// 	'/',
-			// 	'POST',
-			// 	JSON.stringify({
-			// 		email
-			// 	})
-			// );
-
-			// if (res) {
-			// 	const state = $page.url.searchParams.get('state');
-			// 	goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
-			// }
+			if (res) {
+				const state = $page.url.searchParams.get('state');
+				goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
+			}
 		}
 	}
 </script>

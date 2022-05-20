@@ -17,7 +17,7 @@
 	};
 
 	onMount(async () => {
-		const rawProvider = await callApiAuth('/user', 'Get');
+		const rawProvider = await callApiAuth('/users/get', 'Get');
 
 		if (rawProvider) {
 			provider = JSON.parse(rawProvider);

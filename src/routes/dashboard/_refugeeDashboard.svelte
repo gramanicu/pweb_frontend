@@ -30,7 +30,7 @@
 	};
 
 	onMount(async () => {
-		const rawRefugee = await callApiAuth('/user', 'Get');
+		const rawRefugee = await callApiAuth('/users/get', 'Get');
 
 		if (rawRefugee) {
 			refugee = JSON.parse(rawRefugee);

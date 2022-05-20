@@ -18,7 +18,7 @@
 				<Badge text={serviceTypeToString(service.type)} class="text-xl" />
 			</div>
 			<div class="pt-1">
-				<a href="/dashboard/locations/{service.location.id}">
+				<a sveltekit:prefetch href="/dashboard/locations/{service.location.id}">
 					<ImageLabel
 						img={OfficeBuilding}
 						imgTheme="outline"

@@ -2,18 +2,31 @@
 	import '$scss/app.scss';
 	import { onMount } from 'svelte';
 	import auth from '$lib/authService';
-	import { auth0Client, isAuthenticated } from '$lib/store';
+	import { auth0Client, isAuthenticated, userType } from '$lib/store';
 	import { goto } from '$app/navigation';
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Menu, X, Bell, Logout } from '@steeze-ui/heroicons';
 	import Logo from '$components/logo.svelte';
 	import { page } from '$app/stores';
+	import type { Auth0Client } from '@auth0/auth0-spa-js';
+	import { UserTypes } from '$lib/types';
+	import { get } from 'svelte/store';
 
 	let menuOpened: boolean = false;
 
 	onMount(async () => {
+		let client: Auth0Client | null;
 		if (!$isAuthenticated) {
-			window.location.href = '/';
+			client = $auth0Client;
+			if (!client) {
+				client = await auth.createClient();
+			}
+
+			await auth.loginWithPopup(client, {});
+
+			if (!$isAuthenticated) {
+				// window.location.href = '/';
+			}
 		}
 	});
 
@@ -24,7 +37,22 @@
 		}
 	}
 
-	const links = [
+	const providerLinks = [
+		{
+			text: 'Dashboard',
+			url: '/dashboard'
+		},
+		{
+			text: 'Services',
+			url: '/dashboard/services'
+		},
+		{
+			text: 'Locations',
+			url: '/dashboard/locations'
+		}
+	];
+
+	const ownerLinks = [
 		{
 			text: 'Dashboard',
 			url: '/dashboard'
@@ -42,6 +70,26 @@
 			url: '/dashboard/locations/new'
 		}
 	];
+
+	const refugeeLinks = [
+		{
+			text: 'Dashboard',
+			url: '/dashboard'
+		},
+		{
+			text: 'Requests',
+			url: '/dashboard/requests'
+		}
+	];
+
+	const links =
+		get(userType) == UserTypes.Owner
+			? ownerLinks
+			: get(userType) == UserTypes.Provider
+			? providerLinks
+			: get(userType) == UserTypes.Refugee
+			? refugeeLinks
+			: [];
 </script>
 
 <svelte:head>
@@ -81,7 +129,7 @@
 		<nav
 			class="w-full z-10  {menuOpened
 				? 'flex'
-				: 'hidden'} max-w-sm sm:rounded-b-md flex-col absolute top-14 bg-white border-b border-black"
+				: 'hidden'} max-w-md sm:rounded-b-md flex-col absolute top-14 bg-white border-b border-black"
 		>
 			{#each links as link, index}
 				<a

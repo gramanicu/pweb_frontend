@@ -14,7 +14,7 @@
 			<Badge text={serviceTypeToString(service.type)} class="text-2xl" />
 		</div>
 		<div class="py-2">
-			<a href="/dashboard/providers/{service.provider.id}">
+			<a sveltekit:prefetch href="/dashboard/providers/{service.provider.id}">
 				<ImageLabel
 					img={User}
 					imgTheme="outline"

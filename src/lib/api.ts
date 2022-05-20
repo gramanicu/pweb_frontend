@@ -66,7 +66,7 @@ export const callApi = async (url: string, method: string, body?: string): Promi
 		}
 
 		const bearer = 'Bearer ' + token;
-		const headers = { Authorization: bearer };
+		const headers = { Authorization: bearer, 'content-type': 'application/json' };
 
 		const res = await fetch(`${vars.api.baseUrl}${url}`, {
 			headers: headers,

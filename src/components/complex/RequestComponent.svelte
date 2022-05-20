@@ -1,25 +1,35 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Badge from '$components/simple/Badge.svelte';
 
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import type { AccommodationRequest } from '$lib/types';
-	import { X, OfficeBuilding, CheckCircle, XCircle } from '@steeze-ui/heroicons';
+	import { X, OfficeBuilding, CheckCircle, XCircle, Mail, Phone } from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 
 	export let accRequest: AccommodationRequest;
 
 	const acceptRequest = async () => {};
 	const declineRequest = async () => {};
+
+	let opened = false;
 </script>
 
 {#if accRequest && accRequest.refugee && accRequest.location}
 	<div
-		class="w-full max-w-sm py-2 px-4 border border-black rounded-md flex flex-row relative items-center"
+		class="w-full max-w-sm py-2 px-4 border {opened
+			? 'rounded-t-md'
+			: 'rounded-md'} border-black flex flex-row relative items-center"
 	>
-		<div class="flex flex-col">
-			<a href="/dashboard/refugees/{accRequest.refugee.id}">
+		<div class="flex flex-col items-start">
+			<button
+				class="hover:underline"
+				on:click={() => {
+					opened = !opened;
+				}}
+			>
 				<h1 class="font-bold text-xl leading-none">{accRequest.refugee.name}</h1>
-			</a>
+			</button>
 			<a href="/dashboard/locations/{accRequest.location.id}">
 				<div class="pt-1">
 					<ImageLabel
@@ -34,12 +44,67 @@
 			</a>
 		</div>
 		<div class="flex flex-row ml-auto ">
-			<button class="rounded-full transition-colors duration-200 text-secondary hover:text-primary">
+			<button
+				on:click={() => {
+					acceptRequest();
+				}}
+				class="rounded-full transition-colors duration-200 text-secondary hover:text-primary"
+			>
 				<Icon size="38px" theme="solid" src={CheckCircle} />
 			</button>
-			<button class="rounded-full transition-colors duration-200 text-secondary hover:text-primary">
+			<button
+				on:click={() => {
+					declineRequest();
+				}}
+				class="rounded-full transition-colors duration-200 text-secondary hover:text-primary"
+			>
 				<Icon size="38px" theme="solid" src={XCircle} />
 			</button>
 		</div>
 	</div>
+	{#if opened}
+		<div
+			class="w-full max-w-sm py-2 px-4 border border-t-0 rounded-b-md border-black flex flex-col"
+		>
+			<div class="flex flex-row w-full items-center">
+				<h1 class="font-bold text-2xl mr-2">{accRequest.refugee.name}</h1>
+
+				{#if accRequest.refugee.no_adults + accRequest.refugee.no_children > 1}
+					<Badge text="Group" />
+				{:else}
+					<Badge text="Individual" />
+				{/if}
+			</div>
+			{#if accRequest.refugee.no_adults + accRequest.refugee.no_children > 1}
+				<h2 class="font-bold text-base text-slate-400 leading-none">
+					Adults: {accRequest.refugee.no_adults}{#if accRequest.refugee.no_children > 0}, Kids: {accRequest
+							.refugee.no_children}{/if}
+				</h2>
+			{/if}
+			<div class="py-2">
+				<ImageLabel
+					img={Mail}
+					imgSize="16px"
+					imgTheme="outline"
+					imgColor="slate-500"
+					text={accRequest.refugee.email}
+					class="text-base text-slate-500 font-semibold"
+				/>
+			</div>
+			<div class="py-2">
+				<a href="tel:{accRequest.refugee.phone}">
+					<ImageLabel
+						img={Phone}
+						imgColor="slate-500"
+						imgSize="16px"
+						text={accRequest.refugee.phone}
+						class="text-base text-slate-500 font-semibold"
+					/>
+				</a>
+			</div>
+			<div class="bg-gray-300 p-2 rounded-md mt-2 text-sm">
+				{#if accRequest.refugee.notes == ''} No notes {:else} {accRequest.refugee.notes} {/if}
+			</div>
+		</div>
+	{/if}
 {/if}

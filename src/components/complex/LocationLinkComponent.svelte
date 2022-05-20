@@ -24,6 +24,7 @@
 			</div>
 		</div>
 		<a
+			sveltekit:prefetch
 			href="/dashboard/locations/{location.id}"
 			class="ml-auto w-6 h-6 rounded-full transition-colors duration-200 hover:text-tertiary"
 		>

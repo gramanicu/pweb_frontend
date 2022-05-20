@@ -12,29 +12,14 @@
 		if (rawLocations) {
 			locations = JSON.parse(rawLocations);
 		}
-
-		locations = [
-			{
-				id: 0,
-				name: 'Location name',
-				address: 'Full Address',
-				id_owner: 0
-			},
-			{
-				id: 1,
-				name: 'Location name2',
-				address: 'Full Address2',
-				id_owner: 0
-			}
-		];
 	});
 </script>
 
 <main class="min-w-full flex flex-col p-4 items-center">
-	{#if locations}
+	{#if locations && locations.length != 0}
 		<div class="w-full flex flex-col max-w-sm mb-4">
 			{#if $userType == UserTypes.Refugee || $userType == UserTypes.Provider}
-				<h1 class="text-primary text-2xl font-bold">Results: {locations.length}</h1>
+				<h1 class="text-primary text-2xl font-bold">Found locations: {locations.length}</h1>
 			{:else if $userType == UserTypes.Owner}
 				<h1 class="text-primary text-2xl font-bold">Owned locations: {locations.length}</h1>{/if}
 		</div>
@@ -43,5 +28,12 @@
 			<LocationLinkComponent {location} />
 			<span class="mb-2" />
 		{/each}
+	{:else}
+		<div class="w-full flex flex-col max-w-sm mb-4">
+			{#if $userType == UserTypes.Refugee || $userType == UserTypes.Provider}
+				<h1 class="text-primary text-center text-2xl font-bold">No locations found</h1>
+			{:else if $userType == UserTypes.Owner}
+				<h1 class="text-primary text-center text-2xl font-bold">No owned locations</h1>{/if}
+		</div>
 	{/if}
 </main>

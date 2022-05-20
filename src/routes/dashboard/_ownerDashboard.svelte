@@ -2,26 +2,24 @@
 	import OwnerComponent from '$components/complex/OwnerComponent.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import { callApiAuth } from '$lib/api';
-	import type { Owner } from '$lib/types';
+	import type { AccommodationRequest, Owner } from '$lib/types';
 	import { User } from '@auth0/auth0-spa-js';
 	import { Bell, User as UserIcon, OfficeBuilding } from '@steeze-ui/heroicons';
 	import { onMount } from 'svelte';
 
-	let owner: Owner = {
-		id: 0,
-		auth0_id: 'auth0_id',
-		email: 'email@example.com',
-		phone: '0123456789',
-		name: 'John Doe'
-	};
-
-	let requestsAwaiting = 0;
+	let owner: Owner;
+	let requests: AccommodationRequest[];
 
 	onMount(async () => {
-		const rawProvider = await callApiAuth('/user', 'Get');
+		const rawProvider = await callApiAuth('/users/get', 'Get');
 
 		if (rawProvider) {
 			owner = JSON.parse(rawProvider);
+
+			const rawRequests = await callApiAuth('/requests', 'GET');
+			if (rawRequests) {
+				requests = JSON.parse(rawRequests);
+			}
 		}
 	});
 </script>
@@ -37,7 +35,7 @@
 			imgColor="secondary"
 			imgSize="24px"
 			class="text-secondary text-lg hover:underline"
-			text="{requestsAwaiting} requests waiting for approval"
+			text="{requests ? requests.length : 0} requests waiting for approval"
 		/>
 	</a>
 	<span class="mb-4" />

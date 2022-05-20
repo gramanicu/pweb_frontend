@@ -40,7 +40,7 @@ async function loginWithRedirect(client: Auth0Client, options: RedirectLoginOpti
 async function loginWithPopup(client: Auth0Client, options: PopupLoginOptions) {
 	popupOpen.set(true);
 	try {
-		await client.loginWithPopup(options);
+		await client.loginWithPopup(options, { timeoutInSeconds: 360 });
 		const newUser = await client.getUser();
 
 		if (newUser) {

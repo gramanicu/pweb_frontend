@@ -101,6 +101,7 @@
 			);
 
 			if (res) {
+				console.log(res);
 				const state = $page.url.searchParams.get('state');
 				goto(`https://${vars.auth0.domain}/continue?state=${state}&role=${selectedRole.value}`);
 			}

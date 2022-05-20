@@ -4,7 +4,16 @@
 
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import type { AccommodationRequest } from '$lib/types';
-	import { X, OfficeBuilding, CheckCircle, XCircle, Mail, Phone } from '@steeze-ui/heroicons';
+	import {
+		X,
+		OfficeBuilding,
+		CheckCircle,
+		XCircle,
+		Mail,
+		Phone,
+		Globe,
+		Translate
+	} from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
 
 	export let accRequest: AccommodationRequest;
@@ -104,6 +113,25 @@
 			</div>
 			<div class="bg-gray-300 p-2 rounded-md mt-2 text-sm">
 				{#if accRequest.refugee.notes == ''} No notes {:else} {accRequest.refugee.notes} {/if}
+			</div>
+
+			<div class="grid grid-cols-2 justify-start w-full mt-3">
+				{#if accRequest.refugee.country}
+					<ImageLabel
+						img={Globe}
+						imgSize="18px"
+						text={accRequest.refugee.country.name}
+						class="text-lg"
+					/>
+				{/if}
+				{#if accRequest.refugee.language}
+					<ImageLabel
+						img={Translate}
+						imgSize="18px"
+						text={accRequest.refugee.language.name}
+						class="text-lg"
+					/>
+				{/if}
 			</div>
 		</div>
 	{/if}

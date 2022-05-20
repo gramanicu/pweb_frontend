@@ -1,8 +1,9 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
+	import { languages } from '$lib/constants';
 	import type { Refugee } from '$lib/types';
-	import { Mail, Phone } from '@steeze-ui/heroicons';
+	import { Globe, Mail, Phone, Translate } from '@steeze-ui/heroicons';
 
 	export let refugee: Refugee;
 </script>
@@ -46,6 +47,14 @@
 		</div>
 		<div class="bg-gray-300 p-2 rounded-md mt-2 text-sm">
 			{#if refugee.notes == ''} No notes {:else} {refugee.notes} {/if}
+		</div>
+		<div class="grid grid-cols-2 justify-start w-full mt-3">
+			{#if refugee.country}
+				<ImageLabel img={Globe} imgSize="18px" text={refugee.country.name} class="text-lg" />
+			{/if}
+			{#if refugee.language}
+				<ImageLabel img={Translate} imgSize="18px" text={refugee.language.name} class="text-lg" />
+			{/if}
 		</div>
 	</div>
 {/if}

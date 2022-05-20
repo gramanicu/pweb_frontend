@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { page } from '$app/stores';
 	import LocationComponent from '$components/complex/LocationComponent.svelte';
 	import Breadcrumbs from '$components/simple/Breadcrumbs.svelte';
@@ -21,47 +23,11 @@
 		if (rawLocation) {
 			location = JSON.parse(rawLocation);
 		}
-
-		let services: Service[] = [
-			{
-				id: 1,
-				description: 'desc',
-				id_provider: 1,
-				id_loc: 1,
-				type: ServiceTypes.CLOTHES
-			},
-			{
-				id: 2,
-				description: 'desc',
-				id_provider: 2,
-				id_loc: 2,
-				type: ServiceTypes.MEDICAL_SERVICE
-			}
-		];
-
-		location = {
-			id: 0,
-			name: 'Location name',
-			address: 'Full address',
-			id_owner: 0,
-			services: services,
-			owner: {
-				id: 0,
-				auth0_id: 'auth0_id',
-				email: 'email@example.com',
-				phone: '0123456789',
-				name: 'John Doe'
-			}
-		};
-
-		newService = {
-			id: 0,
-			description: '',
-			id_provider: 0,
-			id_loc: location.id,
-			type: ServiceTypes.GENERIC
-		};
 	});
+
+	async function sendAccommodationRequest() {
+		goto('dashboard');
+	}
 </script>
 
 <main class="min-w-full flex flex-col p-4 items-center">
@@ -77,7 +43,8 @@
 			<LocationComponent {location} />
 
 			{#if $userType == UserTypes.Refugee}
-				<LargeButton text="Request accommodation" />
+				<span class="mb-2" />
+				<LargeButton on:click={() => sendAccommodationRequest()} text="Request accommodation" />
 			{:else if $userType == UserTypes.Provider}
 				<div class="mt-2 flex flex-col p-4 border border-black rounded-md shadow-md">
 					<div class="flex flex-row items-center text-lg mb-4">

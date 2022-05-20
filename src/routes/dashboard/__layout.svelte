@@ -77,8 +77,8 @@
 			url: '/dashboard'
 		},
 		{
-			text: 'Requests',
-			url: '/dashboard/requests'
+			text: 'Locations',
+			url: '/dashboard/locations'
 		}
 	];
 

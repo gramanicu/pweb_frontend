@@ -62,6 +62,7 @@ export interface Location {
 
 export interface Service {
 	id: number;
+	name: string;
 	description: string;
 	provider?: Provider;
 	location?: Location;

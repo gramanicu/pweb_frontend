@@ -3,7 +3,8 @@
 	import Badge from '$components/simple/Badge.svelte';
 
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import type { AccommodationRequest } from '$lib/types';
+	import { callApiAuth } from '$lib/api';
+	import { requestStatusTypes, type AccommodationRequest } from '$lib/types';
 	import {
 		X,
 		OfficeBuilding,
@@ -15,16 +16,49 @@
 		Translate
 	} from '@steeze-ui/heroicons';
 	import { Icon } from '@steeze-ui/svelte-icon';
+	import { createEventDispatcher } from 'svelte';
 
 	export let accRequest: AccommodationRequest;
 
-	const acceptRequest = async () => {};
-	const declineRequest = async () => {};
+	const dispatch = createEventDispatcher();
+
+	const acceptRequest = async () => {
+		const res = await callApiAuth(
+			`/accommodation-request/${accRequest.id}/respond`,
+			'PUT',
+			JSON.stringify({
+				status: requestStatusTypes.ACCEPTED
+			})
+		);
+
+		if (res) {
+			accRequest = JSON.parse(res);
+			dispatch('responded', {
+				response: requestStatusTypes.ACCEPTED
+			});
+		}
+	};
+	const declineRequest = async () => {
+		const res = await callApiAuth(
+			`/accommodation-request/${accRequest.id}/respond`,
+			'PUT',
+			JSON.stringify({
+				status: requestStatusTypes.DECLINED
+			})
+		);
+
+		if (res) {
+			accRequest = JSON.parse(res);
+			dispatch('responded', {
+				response: requestStatusTypes.DECLINED
+			});
+		}
+	};
 
 	let opened = false;
 </script>
 
-{#if accRequest && accRequest.refugee && accRequest.location}
+{#if accRequest && accRequest.refugee && accRequest.location && accRequest.status == requestStatusTypes.UNANSWERED}
 	<div
 		class="w-full max-w-sm py-2 px-4 border {opened
 			? 'rounded-t-md'

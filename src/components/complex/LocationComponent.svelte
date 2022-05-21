@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import { serviceTypeToString, type Location } from '$lib/types';
+	import { parseServiceType } from '$lib/helpers';
+	import type { Location } from '$lib/types';
 	import { LocationMarker, User } from '@steeze-ui/heroicons';
 
 	export let location: Location;
@@ -19,13 +20,13 @@
 				class="text-slate-500 text-base font-semibold"
 			/>
 		</div>
-		<div class="py-2 mb-2">
+		<div class="py-2 {location.services && location.services.length > 0 ? 'mb-2' : ''}">
 			<ImageLabel img={User} imgTheme="outline" text={location.owner.name} class="text-lg" />
 		</div>
 		<div class="w-full flex flex-row">
 			{#if location.services}
 				{#each location.services as service}
-					<Badge class="mr-2" text={serviceTypeToString(service.type)} />
+					<Badge class="mr-2" text={parseServiceType(service.type)} />
 				{/each}
 			{/if}
 		</div>

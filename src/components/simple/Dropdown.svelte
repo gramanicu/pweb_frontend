@@ -18,8 +18,11 @@
 	export let selectedOption = { text: '', value: '' };
 </script>
 
-<div use:clickOutside={clickOutsideHandler} class="{$$props.class} relative inline-block text-left">
-	<div>
+<div
+	use:clickOutside={clickOutsideHandler}
+	class="{$$props.class} relative inline-block text-left w-full"
+>
+	<div class="w-full">
 		<button
 			on:click={() => {
 				opened = !opened;
@@ -29,15 +32,14 @@
 			id="menu-button"
 			aria-expanded="true"
 			aria-haspopup="true"
-		>
-			{selectedOption.text}
+			><span class="mr-6"> {selectedOption.text}</span>
 			<Icon size="24px" src={ChevronDown} theme="solid" class="absolute right-1" />
 		</button>
 	</div>
 	<div
 		class="{opened
 			? 'block'
-			: 'hidden'} z-10 origin-top-right absolute right-0 mt-1 rounded-md shadow-lg border border-gray-500 bg-white w-full"
+			: 'hidden'} z-10 origin-top-right absolute right-0 mt-1 rounded-md shadow-lg border border-gray-500 bg-white min-w-full w-fit"
 		role="menu"
 		aria-orientation="vertical"
 		aria-labelledby="menu-button"
@@ -57,11 +59,13 @@
 						? 'border-b border-gray-500'
 						: ''} {selectedOption == option
 						? 'text-secondary pointer-events-none'
-						: ' hover:font-medium'}"
+						: ' hover:underline'}"
 					role="menuitem"
 					tabindex="-1"
 					id="menu-item-{index}"
-					type="button">{option.text}</button
+					type="button"
+				>
+					<span class="mr-2">{option.text}</span></button
 				>
 			{/each}
 		</div>

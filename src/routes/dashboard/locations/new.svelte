@@ -26,7 +26,7 @@
 		);
 
 		if (res) {
-			goto('/locations');
+			goto('/dashboard/locations');
 		}
 	}
 

@@ -68,46 +68,33 @@ export interface Service {
 	location?: Location;
 	id_provider: number;
 	id_loc: number;
-	type: ServiceTypes;
+	type: serviceTypes;
 }
 
 export interface AccommodationRequest {
 	id: number;
 	refugee?: Refugee;
-	approved: number;
 	id_refugee: number;
 	id_location: number;
 	location?: Location;
+	status: requestStatusTypes;
 }
 
-export enum ServiceTypes {
-	GENERIC,
-	FOOD,
-	CLOTHES,
-	MEDICAL_SERVICE,
-	TRANSLATION_SERVICE,
-	LEISURE
-}
+export const requestStatusTypes = {
+	UNANSWERED: 'UNANSWERED',
+	ACCEPTED: 'ACCEPTED',
+	DECLINED: 'DECLINED'
+};
 
-export function serviceTypeToString(type: ServiceTypes): string {
-	switch (type) {
-		case ServiceTypes.GENERIC: {
-			return 'Generic';
-		}
-		case ServiceTypes.FOOD: {
-			return 'Food';
-		}
-		case ServiceTypes.CLOTHES: {
-			return 'Clothing';
-		}
-		case ServiceTypes.MEDICAL_SERVICE: {
-			return 'Medical';
-		}
-		case ServiceTypes.TRANSLATION_SERVICE: {
-			return 'Translation';
-		}
-		case ServiceTypes.LEISURE: {
-			return 'Leisure';
-		}
-	}
-}
+export type requestStatusTypes = typeof requestStatusTypes[keyof typeof requestStatusTypes];
+
+export const serviceTypes = {
+	GENERIC: 'GENERIC',
+	FOOD: 'FOOD',
+	CLOTHES: 'CLOTHES',
+	MEDICAL_SERVICE: 'MEDICAL_SERVICE',
+	TRANSLATION_SERVICE: 'TRANSLATION_SERVICE',
+	LEISURE: 'LEISURE'
+};
+
+export type serviceTypes = typeof serviceTypes[keyof typeof serviceTypes];

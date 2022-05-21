@@ -24,7 +24,7 @@ export const callApiAuth = async (url: string, method: string, body?: string): P
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let headers: any = { Authorization: bearer };
 
-		if (method.toLowerCase() == 'post') {
+		if (method.toLowerCase() == 'post' || method.toLowerCase() == 'put') {
 			headers = {
 				Authorization: bearer,
 				'content-type': 'application/json'

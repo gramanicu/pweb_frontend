@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Badge from '$components/simple/Badge.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
-	import { serviceTypeToString, type Service } from '$lib/types';
+	import { parseServiceType } from '$lib/helpers';
+	import type { Service } from '$lib/types';
 	import { User } from '@steeze-ui/heroicons';
 
 	export let service: Service;
@@ -11,7 +12,7 @@
 	<div class="w-full max-w-sm p-4 border border-black rounded-md">
 		<div class="flex flex-row w-full items-center">
 			<h1 class="font-bold text-2xl mr-2">Service type:</h1>
-			<Badge text={serviceTypeToString(service.type)} class="text-2xl" />
+			<Badge text={parseServiceType(service.type)} class="text-2xl" />
 		</div>
 		<div class="py-2">
 			<a sveltekit:prefetch href="/dashboard/providers/{service.provider.id}">

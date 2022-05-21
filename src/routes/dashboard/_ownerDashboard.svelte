@@ -2,7 +2,7 @@
 	import OwnerComponent from '$components/complex/OwnerComponent.svelte';
 	import ImageLabel from '$components/simple/ImageLabel.svelte';
 	import { callApiAuth } from '$lib/api';
-	import type { AccommodationRequest, Owner } from '$lib/types';
+	import { requestStatusTypes, type AccommodationRequest, type Owner } from '$lib/types';
 	import { User } from '@auth0/auth0-spa-js';
 	import { Bell, User as UserIcon, OfficeBuilding } from '@steeze-ui/heroicons';
 	import { onMount } from 'svelte';
@@ -11,15 +11,22 @@
 	let requests: AccommodationRequest[];
 
 	onMount(async () => {
-		const rawProvider = await callApiAuth('/users/get', 'Get');
+		const rawOwner = await callApiAuth('/users/get', 'Get');
 
-		if (rawProvider) {
-			owner = JSON.parse(rawProvider);
+		if (rawOwner) {
+			owner = JSON.parse(rawOwner);
 
-			const rawRequests = await callApiAuth('/requests', 'GET');
+			const rawRequests = await callApiAuth('/accommodation-request', 'GET');
 			if (rawRequests) {
 				requests = JSON.parse(rawRequests);
 			}
+
+			const rawLocations = await callApiAuth('/locations', 'GET');
+			if (rawLocations) {
+				owner.locations = JSON.parse(rawLocations);
+			}
+
+			owner = owner;
 		}
 	});
 </script>
@@ -35,7 +42,11 @@
 			imgColor="secondary"
 			imgSize="24px"
 			class="text-secondary text-lg hover:underline"
-			text="{requests ? requests.length : 0} requests waiting for approval"
+			text="{requests
+				? requests.filter((req) => {
+						return req.status == requestStatusTypes.UNANSWERED;
+				  }).length
+				: 0} requests waiting for approval"
 		/>
 	</a>
 	<span class="mb-4" />

@@ -14,9 +14,9 @@
 		class="w-full max-w-sm py-2 px-4 border border-black rounded-md flex flex-row relative items-center"
 	>
 		<div class="flex flex-col">
-			<div class="flex flex-row w-full items-center">
-				<h1 class="font-bold text-xl mr-2">Service type:</h1>
-				<Badge text={parseServiceType(service.type)} class="text-xl" />
+			<div class="flex flex-row flex-wrap  w-full items-center">
+				<h1 class="font-bold text-xl mr-2 whitespace-nowrap">{service.name}</h1>
+				<Badge text={parseServiceType(service.type)} class="text-xl whitespace-nowrap" />
 			</div>
 			<div class="pt-1">
 				<a sveltekit:prefetch href="/dashboard/locations/{service.location.id}">

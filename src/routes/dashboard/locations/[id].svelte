@@ -92,7 +92,7 @@
 		);
 
 		if (res) {
-			goto('/dashboard');
+			goto('/dashboard/locations');
 		}
 	}
 
